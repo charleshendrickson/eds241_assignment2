@@ -1,0 +1,169 @@
+---
+title: "EDS241: Assignment 2"
+author: "Charles Hendrickson"
+date: '`r format(Sys.time(), "%m/%d/%Y")`'
+output: 
+  pdf_document:
+    toc: false
+    number_sections: yes
+header-includes:
+  - \setlength{\parindent}{1em}
+  - \usepackage{float}
+--- 
+  
+``` {r setup, echo = FALSE, message = FALSE, warning = FALSE}
+
+# set default chunk options
+knitr::opts_chunk$set(fig.width = 4, fig.height = 3, 
+                      echo = TRUE, message = FALSE, warning = FALSE)
+
+
+# load packages
+packages=c("stargazer", "here", "tidyr", "dplyr","stringr", "janitor", 
+           "cowplot", "ggplot2", "tinytex", "datasets", "tibble", "openxlsx", "estimatr", "car", "readxl")
+
+# Load estimatr package
+library(estimatr)
+
+for (i in packages) {
+  if (require(i,character.only=TRUE)==FALSE) {
+    install.packages(i,repos='http://cran.us.r-project.org')
+  }
+  else {
+    require(i,character.only=TRUE)
+  }
+}
+
+#devtools::install_github('rstudio/rmarkdown')
+options(scipen=10) # not scientific notation
+
+```
+
+Load the NBP.xls data 
+```{r}
+# load data 
+nbp_data <- read_excel("data/NBP.xls")
+
+```
+
+\noindent (a) Make a histogram depicting the distribution of Dnox_masstons.
+
+```{r}
+ggplot(data = nbp_data, aes(x = Dnox_masstons)) +
+  geom_histogram() +
+  labs(title = "Distribution of the change in annual nitrogen oxides (NOx) emissions
+from all power plants in U.S. counties between 2000 and 2008", 
+x = "Change in annual nitrogen oxides 
+(NOx) emissions (in tons)",
+y = "Number of U.S. Counties")
+  
+```
+
+\noindent (b) Create an indicator =1 if the county has PctBlack above the sample median, and =0 otherwise (in the rest of the assignment, I refer to this variable as ‘D’). What is the average of PctBlack for counties above the median, i.e. counties for which D=1?
+
+**The average of PctBlack for counties above the median (counties for which D=1) is  19.31375%.**
+
+```{r}
+# Create new column called "D" which is an indicator that equals 1 if the county has PctBlack above the sample median, and equals 0 otherwise
+
+# First, find the sample median for PctBlack
+PctBlack_median <- median(nbp_data$PctBlack)
+
+# Second, create a new variable called "D" by using "ifelse", which takes a condition, followed by what the output should be if the condition is met, followed by the output of the condition is not met.
+nbp_data <- nbp_data %>%
+  mutate(D = ifelse(PctBlack > PctBlack_median, 1, 0))
+
+# Third, find the average of PctBlack for counties above the median (counties for which D=1)
+
+avg_PctBlack_D1 <- nbp_data %>%
+  filter(D == 1)%>% 
+  summarise(mean_PctBlack = mean(PctBlack))
+
+print(avg_PctBlack_D1)
+
+```
+
+\noindent (c) Estimate a regression of Dnox_masstons on NBP. Interpret the estimated intercept and the coefficient on NBP.
+
+**The estimated intercept means that for U.S. counties that were not regulated under the NOx Budget Program, the average change in annual NOx emissions between 2000 and 2008 from all power plants in that county was -3.622 tons on average.**
+
+**The estimated coefficient on NBP means that an unregulated county being regulated under the NOx Budget Program will increase the average change in annual NOx emissions by -3.920 tons from all power plants in that county between 2000 and 2008.** 
+
+```{r}
+# Regress Dnox_masstons on NBP
+lm_robust(Dnox_masstons ~ NBP, data = nbp_data)
+
+```
+
+\noindent (d) Create an interaction between the variables NBP and D. Estimate a regression of Dnox_masstons on NBP, D, and this interaction. Interpret each estimated regression coefficient, including the intercept.
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
