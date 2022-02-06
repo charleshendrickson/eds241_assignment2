@@ -77,17 +77,18 @@ nbp_data <- nbp_data %>%
 
 avg_PctBlack_D1 <- nbp_data %>%
   filter(D == 1)%>% 
-  summarise(mean_PctBlack = mean(PctBlack))
+  summarise(mean_PctBlack = mean(PctBlack)) %>% 
+  as.numeric()
 
 print(avg_PctBlack_D1)
-
 ```
 
 \noindent (c) Estimate a regression of Dnox_masstons on NBP. Interpret the estimated intercept and the coefficient on NBP.
 
-**The estimated intercept means that for U.S. counties that were not regulated under the NOx Budget Program, the average change in annual NOx emissions between 2000 and 2008 from all power plants in that county was -3.622 tons on average.**
+**The estimated intercept means that for U.S. counties that were not regulated under the NOx Budget Program, the change in annual NOx emissions between 2000 and 2008 from all power plants in that county was -3.622 tons on average.**
 
-**The estimated coefficient on NBP means that an unregulated county being regulated under the NOx Budget Program will increase the average change in annual NOx emissions by -3.920 tons from all power plants in that county between 2000 and 2008.** 
+**The estimated coefficient on NBP means that the difference in the change in annual NOx emissions (2000 to 2008) between power plants in a county regulated under the NOx Budget Program (NBP) and power plants in a county unregulated under the NBP is -3.920 tons on average.**
+
 
 ```{r}
 # Regress Dnox_masstons on NBP
@@ -97,13 +98,29 @@ lm_robust(Dnox_masstons ~ NBP, data = nbp_data)
 
 \noindent (d) Create an interaction between the variables NBP and D. Estimate a regression of Dnox_masstons on NBP, D, and this interaction. Interpret each estimated regression coefficient, including the intercept.
 
-```{r}
+**The estimated intercept means that for U.S. counties that were not regulated under the NOx Budget Program, the change in annual NOx emissions between 2000 and 2008 from all power plants in that county was -3.714107 tons on average.**
 
+**The estimated coefficient on NBP means that the difference in the change in annual NOx emissions (2000 to 2008) between power plants in a county regulated under the NOx Budget Program (NBP) and power plants in a county unregulated under the NBP is -3.933890 tons on average.**
+
+**The estimated regression coefficient for "D" means that the difference in the change in annual NOx emissions (2000 to 2008) between power plants in a county with an African American population above the sample median and a county with an African American population below the sample median is 0.197928 tons on average.**
+
+```{r}
+# Creates a linear model 
+lm_robust(Dnox_masstons ~ NBP + D + , data = nbp_data)
 ```
 
 
+(e) What is the predicted Dnox_masstons in a county that was not regulated under NBP and where PctBlack is above the sample median (i.e., where D=1)? Report the 95% confidence interval for this prediction. Make sure to use “heteroskedasticity-robust” standard errors.
+
+**The predicted Dnox_masstons in a county that was not regulated under NBP and where PctBlack is above the sample median is -3.516179 tons.**
 
 
+
+```{r}
+Dnox_masstons = -3.714107 + (-3.933890)*(0) + (0.197928)*(1)
+
+print(Dnox_masstons)
+```
 
 
 
